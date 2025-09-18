@@ -1,0 +1,31 @@
+name: Build QMK Firmware
+
+on:
+  push:
+    branches:
+      - main # or master, depending on your branch name
+  workflow_dispatch:
+
+jobs:
+  build-firmware:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build firmware
+        uses: qmk/qmk_firmware/.github/workflows/build-firmware.yml@main
+        with:
+          keyboard: crkbd/rev4_1/standard # Replace with your specific keyboard and revision
+          keymap: LAYOUT_split_3x6_3_ex2 # Replace with a name for your keymap
+          target: crkbd/rev4_1/standard:cornehk # Replace
+          # You might need to specify the keymap path if it's not in the default location
+          # keymap-path: 'path/to/your/keymap'
+          # If you're building for both halves, you might need two separate jobs or a more complex script
+          
+      - name: Upload firmware
+        uses: actions/upload-artifact@v3
+        with:
+          name: firmware
+          path: .build
